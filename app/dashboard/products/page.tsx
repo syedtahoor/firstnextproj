@@ -23,12 +23,8 @@ import {
 
 import { ProductModal, Product, EMPTY_FORM } from "../../../components/products/productaddmodal";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type Status    = "Active" | "Draft" | "Inactive";
 type SortKey   = "name" | "price" | "status" | "inventory";
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
 
 const INITIAL_PRODUCTS: Product[] = [
   { id: 1, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=80&h=80&fit=crop", name: "Premium Smartwatch Pro", price: 299, discount: 15, condition: "New", sku: "SW-001", inventory: 42, shippingType: "Free", status: "Active", deal: true, recommended: true, description: "Next-gen smartwatch with health tracking, AMOLED display and 7-day battery." },
@@ -40,8 +36,6 @@ const INITIAL_PRODUCTS: Product[] = [
   { id: 7, image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=80&h=80&fit=crop", name: "UV Protection Sunglasses", price: 45, discount: 0, condition: "New", sku: "SG-007", inventory: 134, shippingType: "Paid", status: "Inactive", deal: false, recommended: false, description: "Polarised UV400 lenses with lightweight titanium frame." },
   { id: 8, image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=80&h=80&fit=crop", name: "Refurb iPhone 13", price: 549, discount: 12, condition: "Refurbished", sku: "IP-008", inventory: 8, shippingType: "Express", status: "Active", deal: true, recommended: false, description: "Certified refurbished, 12-month warranty included." },
 ];
-
-// ─── Style Maps ───────────────────────────────────────────────────────────────
 
 const STATUS_CLASS: Record<Status, string> = {
   Active:   "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -63,8 +57,6 @@ const SHIPPING_CLASS: Record<Product["shippingType"], string> = {
   Local:   "bg-yellow-50 text-yellow-700",
 };
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
 export default function ProductsPage() {
   const [products, setProducts]         = useState<Product[]>(INITIAL_PRODUCTS);
   const [search, setSearch]             = useState("");
@@ -76,7 +68,6 @@ export default function ProductsPage() {
   const [editId, setEditId]             = useState<number | null>(null);
   const [form, setForm]                 = useState<Omit<Product, "id">>(EMPTY_FORM);
 
-  // Filtering + sorting
   const visible = products
     .filter(p => {
       const ms = p.name.toLowerCase().includes(search.toLowerCase()) || p.sku.toLowerCase().includes(search.toLowerCase());
@@ -97,12 +88,10 @@ export default function ProductsPage() {
       ? sortAsc ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
       : <ArrowUpDown className="h-3 w-3 opacity-30" />;
 
-  // Selection
   const allSelected = visible.length > 0 && visible.every(p => selected.has(p.id));
   const toggleAll   = () => allSelected ? setSelected(new Set()) : setSelected(new Set(visible.map(p => p.id)));
   const toggleOne   = (id: number) => setSelected(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
 
-  // CRUD
   const openAdd  = () => { setEditId(null); setForm(EMPTY_FORM); setModalOpen(true); };
   const openEdit = (p: Product) => { const { id, ...rest } = p; setEditId(id); setForm(rest); setModalOpen(true); };
   const handleSave = () => {
@@ -116,7 +105,6 @@ export default function ProductsPage() {
   const toggleDeal        = (id: number) => setProducts(p => p.map(x => x.id === id ? { ...x, deal: !x.deal } : x));
   const toggleRecommended = (id: number) => setProducts(p => p.map(x => x.id === id ? { ...x, recommended: !x.recommended } : x));
 
-  // Stats
   const stats = {
     total:    products.length,
     active:   products.filter(p => p.status === "Active").length,
@@ -126,17 +114,13 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-sm text-gray-700 overflow-x-hidden">
-
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 pt-6 pb-0">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div>
-            {/* Brand accent label — now uses inline style for #0a3d47 */}
             <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#0a3d47" }}>Catalogue</p>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Products</h1>
             <p className="text-sm text-gray-500 mt-1">Manage all products listed on your website</p>
           </div>
-          {/* Primary CTA button */}
           <Button
             onClick={openAdd}
             className="mt-1 text-white hover:opacity-90"
@@ -146,7 +130,6 @@ export default function ProductsPage() {
           </Button>
         </div>
 
-        {/* Status tabs */}
         <div className="flex gap-1">
           {([
             { key: "All",      label: "All",      n: stats.total,    dot: "bg-gray-400"    },
@@ -169,7 +152,6 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Toolbar */}
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 flex-wrap">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
@@ -194,7 +176,6 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* Selection banner */}
       {selected.size > 0 && (
         <div
           className="border-b px-6 py-2 flex items-center gap-2 text-xs font-semibold"
@@ -212,7 +193,6 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* Table */}
       <div className="px-6 py-5">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <Table>
@@ -387,7 +367,6 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Modal */}
       <ProductModal
         open={modalOpen}
         editId={editId}

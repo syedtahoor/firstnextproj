@@ -12,8 +12,6 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type Status       = "Active" | "Draft" | "Inactive";
 type Condition    = "New" | "Used" | "Refurbished";
 type ShippingType = "Free" | "Paid" | "Express" | "Local";
@@ -41,8 +39,6 @@ export const EMPTY_FORM: Omit<Product, "id"> = {
 };
 
 const BRAND = "#0a3d47";
-
-// ─── Image Upload Zone ────────────────────────────────────────────────────────
 
 function ImageZone({ value, onChange }: { value: string; onChange: (src: string) => void }) {
   const [tab, setTab]       = useState<"upload" | "url">("upload");
@@ -173,8 +169,6 @@ function ImageZone({ value, onChange }: { value: string; onChange: (src: string)
   );
 }
 
-// ─── Product Modal (portal version) ──────────────────────────────────────────
-
 export function ProductModal({
   open, editId, form, setForm, onClose, onSave,
 }: {
@@ -212,13 +206,11 @@ export function ProductModal({
         .field-label { font-size:11.5px; font-weight:700; color:#6b7280; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:6px; display:block; }
       `}</style>
 
-      {/* Backdrop */}
       <div
         onClick={onClose}
         style={{ animation: "backdropIn 0.18s ease", zIndex: 99998, position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(2px)" }}
       />
 
-      {/* Centering wrapper */}
       <div
         style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}
       >
@@ -226,12 +218,10 @@ export function ProductModal({
           onClick={e => e.stopPropagation()}
           style={{ animation: "modalSlideIn 0.24s cubic-bezier(.34,1.28,.64,1)", width: "100%", maxWidth: "700px", display: "flex", flexDirection: "column" }}
         >
-          {/* Card */}
           <div
             className="bg-white rounded-2xl border border-gray-100"
             style={{ maxHeight: "min(90vh, 820px)", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px -8px rgba(0,0,0,0.28)" }}
           >
-            {/* Header */}
             <div className="flex items-center justify-between px-6 py-3.5 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -255,7 +245,6 @@ export function ProductModal({
               </button>
             </div>
 
-            {/* Body */}
             <div className="modal-body flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-4">
               <div>
                 <span className="field-label">Product Image</span>
@@ -370,7 +359,6 @@ export function ProductModal({
               </div>
             </div>
 
-            {/* Footer */}
             <div className="flex items-center justify-between px-7 py-4 border-t border-gray-100 bg-gray-50/60 flex-shrink-0">
               <p className="text-xs text-gray-400"><span className="text-red-400">*</span> Required fields</p>
               <div className="flex gap-3">

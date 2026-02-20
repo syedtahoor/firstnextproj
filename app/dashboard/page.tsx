@@ -13,7 +13,6 @@ export default function DashboardPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-      {/* Page Header */}
       <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
           <p style={{ margin: 0, fontSize: "12.5px", color: "#0a3d47", fontWeight: 500 }}>
@@ -25,16 +24,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
         {stats.map((stat, i) => <StatsCard key={i} {...stat} />)}
       </div>
 
-      {/* Middle Row */}
       <div className="mid-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
         <WeeklyChart />
 
-        {/* Monthly Target */}
         <div style={{
           background: "linear-gradient(135deg, #0a3d47 0%, #061f27 100%)",
           borderRadius: "18px", padding: "24px", color: "white",

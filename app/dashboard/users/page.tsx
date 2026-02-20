@@ -9,8 +9,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type UserStatus = "Active" | "Inactive" | "Banned" | "Pending";
 type UserRole   = "Admin" | "Moderator" | "Customer";
 type SortKey    = "name" | "role" | "joined" | "orders" | "spent" | "status";
@@ -29,8 +27,6 @@ interface AppUser {
   spent:    number;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
 const INITIAL_USERS: AppUser[] = [
   { id: 1, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",  name: "Ahmed Raza",     email: "ahmed.raza@gmail.com",  phone: "+92 300 1234567", location: "Karachi, PK",    role: "Admin",     status: "Active",   joined: "Jan 12, 2024", orders: 34, spent: 12400 },
   { id: 2, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sara",   name: "Sara Khan",      email: "sara.k@outlook.com",    phone: "+92 321 9876543", location: "Lahore, PK",     role: "Customer",  status: "Active",   joined: "Mar 5, 2024",  orders: 12, spent: 4320  },
@@ -41,8 +37,6 @@ const INITIAL_USERS: AppUser[] = [
   { id: 7, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hamza",  name: "Hamza Sheikh",   email: "hamza.s@gmail.com",     phone: "+92 311 4445566", location: "Peshawar, PK",   role: "Admin",     status: "Active",   joined: "Jun 14, 2023", orders: 0,  spent: 0     },
   { id: 8, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Farah",  name: "Farah Siddiqui", email: "farah.sid@mail.com",    phone: "+92 322 6667788", location: "Quetta, PK",     role: "Customer",  status: "Pending",  joined: "Nov 30, 2024", orders: 0,  spent: 0     },
 ];
-
-// ─── Style Maps ───────────────────────────────────────────────────────────────
 
 const STATUS_CLASS: Record<UserStatus, string> = {
   Active:   "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -67,14 +61,10 @@ const ROLE_ICON: Record<UserRole, React.ElementType> = {
   Customer:  User,
 };
 
-// ─── Sort Arrow ───────────────────────────────────────────────────────────────
-
 const SortArrow = ({ active, asc }: { active: boolean; asc: boolean }) =>
   active
     ? asc ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
     : <ArrowUpDown className="h-3 w-3 opacity-30" />;
-
-// ─── User Card ────────────────────────────────────────────────────────────────
 
 function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number) => void; onDelete: (id: number) => void }) {
   const RoleIcon = ROLE_ICON[user.role];
@@ -82,10 +72,8 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-      {/* Accent bar */}
       <div className="h-1.5 w-full" style={{ backgroundColor: "#0a3d47" }} />
 
-      {/* Header */}
       <div className="px-5 pt-5 pb-4 flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 flex-shrink-0" style={{ borderColor: "#0a3d4725" }}>
@@ -106,7 +94,6 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
           </div>
         </div>
 
-        {/* Status + Menu */}
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold border whitespace-nowrap ${STATUS_CLASS[user.status]}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[user.status]}`} />
@@ -144,10 +131,8 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
         </div>
       </div>
 
-      {/* Divider */}
       <div className="mx-5 border-t border-gray-100" />
 
-      {/* Contact Info */}
       <div className="px-5 py-3 space-y-1.5">
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Mail className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
@@ -167,7 +152,6 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
         </div>
       </div>
 
-      {/* Stats Footer */}
       <div className="mx-4 mb-4 mt-2 grid grid-cols-2 gap-2">
         <div className="rounded-xl px-3 py-2.5" style={{ backgroundColor: "#0a3d4708" }}>
           <div className="flex items-center gap-1 mb-0.5">
@@ -187,8 +171,6 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
     </div>
   );
 }
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function UsersPage() {
   const [users, setUsers]               = useState<AppUser[]>(INITIAL_USERS);
@@ -245,9 +227,8 @@ export default function UsersPage() {
   ];
 
   return (
-    <div className="min-h-screen  font-sans text-sm text-gray-700">
+    <div className="min-h-screen font-sans text-sm text-gray-700">
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="bg-white border-b rounded-md border-gray-200 px-6 pt-6 pb-0">
         <div className="mb-5">
           <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#0a3d47" }}>Management</p>
@@ -255,7 +236,6 @@ export default function UsersPage() {
           <p className="text-sm text-gray-500 mt-1">View and manage all registered users on your platform</p>
         </div>
 
-        {/* Status Tabs */}
         <div className="flex gap-1">
           {statusTabs.map(s => (
             <button
@@ -274,9 +254,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      {/* ── Toolbar ────────────────────────────────────────────────────────── */}
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 flex-wrap">
-        {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
           <input
@@ -292,11 +270,8 @@ export default function UsersPage() {
           )}
         </div>
 
-        
-
         <div className="flex-1" />
 
-        {/* Sort Controls */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-400 font-medium">Sort:</span>
           <div className="flex gap-1">
@@ -315,8 +290,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      {/* ── Card Grid ──────────────────────────────────────────────────────── */}
-      <div className=" py-4">
+      <div className="py-4">
         {visible.length > 0 ? (
           <>
             <p className="text-xs text-gray-400 mb-3 font-medium">

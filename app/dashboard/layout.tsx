@@ -28,8 +28,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       display: "flex",
       minHeight: "100vh",
       background: "#f0fafc",
-      overflowX: "hidden", // ← yahan fix hai
-      maxWidth: "100vw",   // ← extra safety
+      overflowX: "hidden",
+      maxWidth: "100vw",  
     }}>
       <Sidebar />
       <div
@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           minHeight: "100vh",
           transition: "margin-left 0.2s cubic-bezier(0.4,0,0.2,1)",
           willChange: "margin-left",
-          minWidth: 0, // ← flex child ko shrink hone deta hai properly
+          minWidth: 0, 
         }}
       >
         <Header />

@@ -29,14 +29,12 @@ export default function LoginPage() {
     setLoading(true);
 
     setTimeout(() => {
-      // Save to localStorage
       localStorage.setItem("adminUsername", username);
       localStorage.setItem("adminPass", password);
 
       setLoading(false);
       setSuccess(`Welcome back, ${username}! Redirecting...`);
 
-      // Redirect after short delay so user sees the success message
       setTimeout(() => {
         router.push("/dashboard");
       }, 1200);
@@ -46,12 +44,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex" style={{ fontFamily: "'Segoe UI', sans-serif" }}>
 
-      {/* ── LEFT SECTION ── */}
       <div
         className="hidden lg:flex flex-col justify-between w-1/2 relative overflow-hidden px-32 py-16"
         style={{ background: "#0a3d47" }}
       >
-        {/* Decorative circles */}
         <div className="absolute w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none"
           style={{ background: "radial-gradient(circle, #ffffff, transparent)", top: "-180px", left: "-180px" }} />
         <div className="absolute w-[350px] h-[350px] rounded-full opacity-10 pointer-events-none"
@@ -59,7 +55,6 @@ export default function LoginPage() {
         <div className="absolute w-[200px] h-[200px] rounded-full opacity-5 pointer-events-none"
           style={{ background: "radial-gradient(circle, #ffffff, transparent)", top: "50%", left: "60%" }} />
 
-        {/* Top — Logo */}
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(-20px)", transition: "all 0.6s ease 0.1s" }}>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
@@ -76,7 +71,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Center — Headline */}
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(20px)", transition: "all 0.7s ease 0.25s" }}>
           <h1 className="text-5xl font-bold text-white leading-tight mb-5">
             Your smart<br />
@@ -101,13 +95,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Bottom */}
         <div style={{ color: "rgba(255,255,255,0.25)", fontSize: "12px" }}>
           © 2024 Flexemarketplace. All rights reserved.
         </div>
       </div>
 
-      {/* ── RIGHT SECTION ── */}
       <div className="flex flex-1 items-center justify-center bg-white p-8">
         <div
           className="w-full max-w-md"
@@ -117,7 +109,6 @@ export default function LoginPage() {
             transition: "all 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s",
           }}
         >
-          {/* Mobile brand */}
           <div className="flex lg:hidden items-center gap-2 mb-10">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "#0a3d47" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -129,7 +120,6 @@ export default function LoginPage() {
             <span className="font-bold text-lg" style={{ color: "#0a3d47" }}>Flexemarketplace</span>
           </div>
 
-          {/* Heading */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold mb-1" style={{ color: "#0a3d47" }}>Sign in</h2>
             <p className="text-sm" style={{ color: "#6b7280" }}>
@@ -137,7 +127,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="mb-5 px-4 py-3 rounded-xl text-sm flex items-center gap-2"
               style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626" }}>
@@ -148,7 +137,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Success */}
           {success && (
             <div className="mb-5 px-4 py-3 rounded-xl text-sm flex items-center gap-2"
               style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#16a34a" }}>
@@ -159,7 +147,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Username */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1.5" style={{ color: "#374151" }}>
               Username
@@ -189,7 +176,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Password */}
           <div className="mb-2">
             <div className="flex justify-between items-center mb-1.5">
               <label className="text-sm font-medium" style={{ color: "#374151" }}>Password</label>
@@ -237,7 +223,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Remember me */}
           <div className="flex items-center gap-2 mb-6 mt-3">
             <input type="checkbox" id="remember" className="w-4 h-4 rounded cursor-pointer"
               style={{ accentColor: "#0a3d47" }} />
@@ -246,7 +231,6 @@ export default function LoginPage() {
             </label>
           </div>
 
-          {/* Sign In button */}
           <button
             onClick={handleLogin}
             disabled={loading}

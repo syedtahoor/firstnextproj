@@ -25,7 +25,6 @@ export default function Sidebar() {
   const [collapsed,  setCollapsed]  = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile,   setIsMobile]   = useState(false);
-  // Optimistic active link — fires INSTANTLY on click, no network wait
   const [activeHref, setActiveHref] = useState(pathname);
 
   useEffect(() => { setActiveHref(pathname); }, [pathname]);
@@ -39,11 +38,10 @@ export default function Sidebar() {
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
-  // Click → instant highlight + background push
   const go = useCallback((href: string) => {
     if (href === pathname) return;
-    setActiveHref(href);                        // instant
-    startTransition(() => router.push(href));   // non-blocking
+    setActiveHref(href);                       
+    startTransition(() => router.push(href));   
   }, [pathname, router]);
 
   const sidebarWidth = isMobile ? "260px" : collapsed ? "72px" : "260px";
@@ -80,7 +78,6 @@ export default function Sidebar() {
         overflow:"hidden",willChange:"width,transform",
       }}>
 
-        {/* Logo row */}
         <div style={{
           padding:"20px 16px",borderBottom:"1px solid rgba(255,255,255,0.10)",
           display:"flex",alignItems:"center",justifyContent:"space-between",gap:"10px",
@@ -108,7 +105,6 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {/* Nav items */}
         <nav style={{flex:1,padding:"10px 14px",overflowY:"auto"}}>
           {(!collapsed || isMobile) && (
             <p style={{
@@ -157,7 +153,6 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        {/* User footer */}
         <div style={{padding:"12px 10px",borderTop:"1px solid rgba(255,255,255,0.10)"}}>
           <div style={{
             display:"flex",alignItems:"center",gap:"10px",padding:"10px 11px",

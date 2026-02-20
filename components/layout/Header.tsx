@@ -18,7 +18,7 @@ export default function Header() {
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(16px)",
         borderBottom: "1px solid #c8e6ea",
-        padding: "0 16px 0 64px",  // ← 64px left padding — hamburger ke liye space
+        padding: "0 16px 0 64px",  
         height: "64px",
         display: "flex", alignItems: "center",
         justifyContent: "space-between", gap: "12px",
@@ -70,10 +70,8 @@ export default function Header() {
   `}</style>
       </div>
 
-      {/* Right */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 
-        {/* Notifications */}
         <div style={{ position: "relative" }}>
           <button
             onClick={() => setNotifOpen(!notifOpen)}
@@ -129,7 +127,6 @@ export default function Header() {
           )}
         </div>
 
-        {/* Avatar */}
         <div style={{
           width: "40px", height: "40px", borderRadius: "30px",
           background: "linear-gradient(135deg, #0a3d47, #082f38)",

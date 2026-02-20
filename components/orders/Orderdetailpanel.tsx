@@ -5,8 +5,6 @@ import {
     User, MapPin, ShoppingBag, CreditCard, Calendar, AlertCircle,
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export type OrderStatus = "Delivered" | "Shipped" | "Processing" | "Cancelled" | "Returned";
 
 export interface OrderItem {
@@ -36,8 +34,6 @@ export interface Order {
     total: number;
     note: string;
 }
-
-// ─── Status Config ────────────────────────────────────────────────────────────
 
 export const STATUS_CFG: Record<OrderStatus, {
     icon: React.ElementType;
@@ -83,14 +79,10 @@ export const STATUS_CFG: Record<OrderStatus, {
     },
 };
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
 interface OrderDetailPanelProps {
     order: Order;
     onClose: () => void;
 }
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelProps) {
     const cfg = STATUS_CFG[order.status];
@@ -103,22 +95,18 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
         @keyframes panelIn    { from { transform: translateX(100%) } to { transform: translateX(0) } }
       `}</style>
 
-            {/* Backdrop */}
             <div
                 className="fixed inset-0 z-40 bg-black/40"
                 style={{ animation: "backdropIn .2s ease" }}
                 onClick={onClose}
             />
 
-            {/* Slide Panel */}
             <div
                 className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white shadow-2xl flex flex-col"
                 style={{ animation: "panelIn .28s cubic-bezier(.16,1,.3,1)" }}
             >
-                {/* Top accent bar */}
                 <div className="h-1 w-full flex-shrink-0" style={{ backgroundColor: "#0a3d47" }} />
 
-                {/* Panel Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
                     <div>
                         <p className="text-xs font-semibold text-gray-400 mb-0.5">Order Details</p>
@@ -142,11 +130,8 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                     </button>
                 </div>
 
-                {/* Scrollable Body */}
-                {/* Scrollable Body */}
                 <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
-                    {/* Progress Timeline */}
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Order Progress</p>
                         <div className="flex items-center">
@@ -166,8 +151,7 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                                                 : <div className="w-2 h-2 rounded-full bg-gray-300" />}
                                         </div>
                                         <span
-                                            className={`text-[10px] font-semibold mt-1 text-center leading-tight max-w-[52px] ${i <= cfg.doneUpto ? "text-gray-800" : "text-gray-400"
-                                                }`}
+                                            className={`text-[10px] font-semibold mt-1 text-center leading-tight max-w-[52px] ${i <= cfg.doneUpto ? "text-gray-800" : "text-gray-400"}`}
                                         >
                                             {step}
                                         </span>
@@ -183,7 +167,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                         </div>
                     </div>
 
-                    {/* Customer Info */}
                     <div className="rounded-2xl border border-gray-100 overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: "#0a3d4709" }}>
                             <User className="h-3.5 w-3.5" style={{ color: "#0a3d47" }} />
@@ -203,7 +186,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                         </div>
                     </div>
 
-                    {/* Delivery Address */}
                     <div className="rounded-2xl border border-gray-100 overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: "#0a3d4709" }}>
                             <MapPin className="h-3.5 w-3.5" style={{ color: "#0a3d47" }} />
@@ -215,7 +197,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                         </div>
                     </div>
 
-                    {/* Items */}
                     <div className="rounded-2xl border border-gray-100 overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: "#0a3d4709" }}>
                             <ShoppingBag className="h-3.5 w-3.5" style={{ color: "#0a3d47" }} />
@@ -243,7 +224,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                         </div>
                     </div>
 
-                    {/* Payment Summary */}
                     <div className="rounded-2xl border border-gray-100 overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: "#0a3d4709" }}>
                             <CreditCard className="h-3.5 w-3.5" style={{ color: "#0a3d47" }} />
@@ -276,7 +256,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                         </div>
                     </div>
 
-                    {/* Customer Note */}
                     {order.note && (
                         <div className="rounded-2xl bg-amber-50 border border-amber-100 px-4 py-3 flex gap-2.5">
                             <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
