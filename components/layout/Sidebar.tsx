@@ -3,28 +3,29 @@
 import { useState, useEffect, useCallback, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, Users, ClockArrowUp, MessageSquare,
-  FileText, CalendarDays, Settings, Sparkles,
+  House, Users, ClockArrowUp, MessageSquare,
+  FileText, SquarePen, Settings, Sparkles,
   Menu, X, ChevronLeft, ChevronRight, ChartBarDecreasing, ShoppingCart
 } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard",  href: "/dashboard",            icon: <LayoutDashboard size={18} /> },
-  { label: "Categories", href: "/dashboard/categories", icon: <ChartBarDecreasing size={18} /> },
-  { label: "Products",   href: "/dashboard/products",   icon: <ShoppingCart size={18} /> },
-  { label: "Users",      href: "/dashboard/users",      icon: <Users size={18} /> },
-  { label: "Orders",   href: "/dashboard/orders",   icon: <ClockArrowUp size={18} />, badge: 5 },
-  { label: "Ask A Message",    href: "/dashboard/askamessage",    icon: <MessageSquare size={18} /> },
+  { label: "Home", href: "/dashboard", icon: <House size={18} /> },
+  { label: "Home Page Editor", href: "/homepageeditor", icon: <SquarePen size={18} /> },
+  { label: "Categories", href: "/categories", icon: <ChartBarDecreasing size={18} /> },
+  { label: "Products", href: "/products", icon: <ShoppingCart size={18} /> },
+  { label: "Users", href: "/users", icon: <Users size={18} /> },
+  { label: "Orders", href: "/orders", icon: <ClockArrowUp size={18} />, badge: 5 },
+  { label: "Ask A Message", href: "/askamessage", icon: <MessageSquare size={18} /> },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router   = useRouter();
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [collapsed,  setCollapsed]  = useState(true);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isMobile,   setIsMobile]   = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [activeHref, setActiveHref] = useState(pathname);
 
   useEffect(() => { setActiveHref(pathname); }, [pathname]);
@@ -40,8 +41,8 @@ export default function Sidebar() {
 
   const go = useCallback((href: string) => {
     if (href === pathname) return;
-    setActiveHref(href);                       
-    startTransition(() => router.push(href));   
+    setActiveHref(href);
+    startTransition(() => router.push(href));
   }, [pathname, router]);
 
   const sidebarWidth = isMobile ? "260px" : collapsed ? "72px" : "260px";
@@ -53,11 +54,11 @@ export default function Sidebar() {
 
       {isMobile && !mobileOpen && (
         <button onClick={() => setMobileOpen(true)} aria-label="Open menu" style={{
-          position:"fixed",top:"11px",left:"16px",zIndex:60,
-          background:"#0a3d47",border:"none",borderRadius:"5px",
-          width:"40px",height:"40px",display:"flex",alignItems:"center",
-          justifyContent:"center",color:"white",
-          boxShadow:"0 4px 12px rgba(10,61,71,0.45)",cursor:"pointer",
+          position: "fixed", top: "11px", left: "16px", zIndex: 60,
+          background: "#0a3d47", border: "none", borderRadius: "5px",
+          width: "40px", height: "40px", display: "flex", alignItems: "center",
+          justifyContent: "center", color: "white",
+          boxShadow: "0 4px 12px rgba(10,61,71,0.45)", cursor: "pointer",
         }}>
           <Menu size={20} />
         </button>
@@ -68,52 +69,52 @@ export default function Sidebar() {
       )}
 
       <aside style={{
-        width:sidebarWidth,minHeight:"100vh",
-        background:"linear-gradient(#07252e 50%,#061f27 100%)",
-        display:"flex",flexDirection:"column",
-        transform:show ? "translateX(0)" : "translateX(-100%)",
-        transition:"width 0.2s cubic-bezier(0.4,0,0.2,1),transform 0.2s cubic-bezier(0.4,0,0.2,1)",
-        position:"fixed",left:0,top:0,bottom:0,zIndex:50,
-        boxShadow:"4px 0 24px rgba(10,61,71,0.35)",
-        overflow:"hidden",willChange:"width,transform",
+        width: sidebarWidth, minHeight: "100vh",
+        background: "linear-gradient(#07252e 50%,#061f27 100%)",
+        display: "flex", flexDirection: "column",
+        transform: show ? "translateX(0)" : "translateX(-100%)",
+        transition: "width 0.2s cubic-bezier(0.4,0,0.2,1),transform 0.2s cubic-bezier(0.4,0,0.2,1)",
+        position: "fixed", left: 0, top: 0, bottom: 0, zIndex: 50,
+        boxShadow: "4px 0 24px rgba(10,61,71,0.35)",
+        overflow: "hidden", willChange: "width,transform",
       }}>
 
         <div style={{
-          padding:"20px 16px",borderBottom:"1px solid rgba(255,255,255,0.10)",
-          display:"flex",alignItems:"center",justifyContent:"space-between",gap:"10px",
+          padding: "20px 16px", borderBottom: "1px solid rgba(255,255,255,0.10)",
+          display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px",
         }}>
-          <div style={{display:"flex",alignItems:"center",gap:"10px",overflow:"hidden"}}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", overflow: "hidden" }}>
             <div style={{
-              width:"36px",height:"36px",borderRadius:"10px",flexShrink:0,
-              background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.18)",
-              display:"flex",alignItems:"center",justifyContent:"center",
+              width: "36px", height: "36px", borderRadius: "10px", flexShrink: 0,
+              background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)",
+              display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <Sparkles size={17} color="white" />
             </div>
             {(!collapsed || isMobile) && (
-              <span style={{color:"white",fontWeight:800,fontSize:"18px",letterSpacing:"-0.3px",whiteSpace:"nowrap"}}>
+              <span style={{ color: "white", fontWeight: 800, fontSize: "18px", letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>
                 SkyPanel
               </span>
             )}
           </div>
           <button onClick={isMobile ? () => setMobileOpen(false) : () => setCollapsed(c => !c)} style={{
-            background:"rgba(255,255,255,0.10)",border:"none",borderRadius:"5px",
-            marginLeft:"-10px",width:"40px",height:"35px",cursor:"pointer",color:"white",
-            display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,
+            background: "rgba(255,255,255,0.10)", border: "none", borderRadius: "5px",
+            marginLeft: "-10px", width: "40px", height: "35px", cursor: "pointer", color: "white",
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
           }}>
-            {isMobile ? <X size={15}/> : collapsed ? <ChevronRight size={15}/> : <ChevronLeft size={15}/>}
+            {isMobile ? <X size={15} /> : collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
         </div>
 
-        <nav style={{flex:1,padding:"10px 14px",overflowY:"auto"}}>
+        <nav style={{ flex: 1, padding: "10px 14px", overflowY: "auto" }}>
           {(!collapsed || isMobile) && (
             <p style={{
-              color:"rgba(255,255,255,0.35)",fontSize:"10px",fontWeight:600,
-              letterSpacing:"1.2px",textTransform:"uppercase",
-              padding:"0 8px",marginBottom:"8px",
+              color: "rgba(255,255,255,0.35)", fontSize: "10px", fontWeight: 600,
+              letterSpacing: "1.2px", textTransform: "uppercase",
+              padding: "0 8px", marginBottom: "8px",
             }}>Main Menu</p>
           )}
-          <ul style={{listStyle:"none",margin:0,padding:0,display:"flex",flexDirection:"column",gap:"2px"}}>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "2px" }}>
             {navItems.map((item) => {
               const active = activeHref === item.href;
               return (
@@ -122,26 +123,26 @@ export default function Sidebar() {
                     onClick={() => go(item.href)}
                     title={(collapsed && !isMobile) ? item.label : undefined}
                     style={{
-                      width:"100%",display:"flex",alignItems:"center",gap:"11px",
-                      padding:(collapsed && !isMobile) ? "11px" : "10px 11px",
-                      borderRadius:"3px",fontFamily:"inherit",outline:"none",
+                      width: "100%", display: "flex", alignItems: "center", gap: "11px",
+                      padding: (collapsed && !isMobile) ? "11px" : "10px 11px",
+                      borderRadius: "3px", fontFamily: "inherit", outline: "none",
                       background: active ? "rgba(255,255,255,0.14)" : "transparent",
                       border: active ? "1px solid rgba(255,255,255,0.18)" : "1px solid transparent",
                       color: active ? "white" : "rgba(255,255,255,0.60)",
-                      justifyContent:(collapsed && !isMobile) ? "center" : "flex-start",
-                      whiteSpace:"nowrap", cursor:"pointer",
+                      justifyContent: (collapsed && !isMobile) ? "center" : "flex-start",
+                      whiteSpace: "nowrap", cursor: "pointer",
                     }}
                   >
-                    <span style={{flexShrink:0,display:"flex",alignItems:"center", cursor:"pointer"}}>{item.icon}</span>
+                    <span style={{ flexShrink: 0, display: "flex", alignItems: "center", cursor: "pointer" }}>{item.icon}</span>
                     {(!collapsed || isMobile) && (
                       <>
-                        <span style={{fontSize:"13.5px",fontWeight:active?600:400,flex:1,textAlign:"left", cursor:"pointer"}}>
+                        <span style={{ fontSize: "13.5px", fontWeight: active ? 600 : 400, flex: 1, textAlign: "left", cursor: "pointer" }}>
                           {item.label}
                         </span>
                         {item.badge && (
                           <span style={{
-                            background:"rgba(255,255,255,0.85)",color:"#0a3d47",
-                            fontSize:"10px",fontWeight:700,borderRadius:"99px",padding:"1px 7px", cursor:"pointer",
+                            background: "rgba(255,255,255,0.85)", color: "#0a3d47",
+                            fontSize: "10px", fontWeight: 700, borderRadius: "99px", padding: "1px 7px", cursor: "pointer",
                           }}>{item.badge}</span>
                         )}
                       </>
@@ -153,21 +154,21 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        <div style={{padding:"12px 10px",borderTop:"1px solid rgba(255,255,255,0.10)"}}>
+        <div style={{ padding: "12px 10px", borderTop: "1px solid rgba(255,255,255,0.10)" }}>
           <div style={{
-            display:"flex",alignItems:"center",gap:"10px",padding:"10px 11px",
-            borderRadius:"10px",background:"rgba(255,255,255,0.08)",
-            justifyContent:(collapsed && !isMobile) ? "center" : "flex-start",
+            display: "flex", alignItems: "center", gap: "10px", padding: "10px 11px",
+            borderRadius: "10px", background: "rgba(255,255,255,0.08)",
+            justifyContent: (collapsed && !isMobile) ? "center" : "flex-start",
           }}>
             <div style={{
-              width:"34px",height:"34px",borderRadius:"50%",background:"rgba(255,255,255,0.9)",
-              display:"flex",alignItems:"center",justifyContent:"center",
-              fontSize:"12px",fontWeight:700,color:"#0a3d47",flexShrink:0,
+              width: "34px", height: "34px", borderRadius: "50%", background: "rgba(255,255,255,0.9)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "12px", fontWeight: 700, color: "#0a3d47", flexShrink: 0,
             }}>AK</div>
             {(!collapsed || isMobile) && (
               <div>
-                <p style={{color:"white",fontSize:"13px",fontWeight:600,margin:0}}>Ali Khan</p>
-                <p style={{color:"rgba(255,255,255,0.45)",fontSize:"11px",margin:0}}>Administrator</p>
+                <p style={{ color: "white", fontSize: "13px", fontWeight: 600, margin: 0 }}>Ali Khan</p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px", margin: 0 }}>Administrator</p>
               </div>
             )}
           </div>

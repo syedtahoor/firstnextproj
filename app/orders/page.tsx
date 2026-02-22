@@ -5,7 +5,7 @@ import {
   MapPin, Calendar,
 } from "lucide-react";
 
-import OrderDetailPanel, { Order, OrderStatus, STATUS_CFG } from "../../../components/orders/Orderdetailpanel";
+import OrderDetailPanel, { Order, OrderStatus, STATUS_CFG } from "../../components/orders/Orderdetailpanel";
 
 const ORDERS: Order[] = [
   {
