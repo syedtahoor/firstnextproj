@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   House, Users, ClockArrowUp, MessageSquare,
-  FileText, SquarePen, Settings, Sparkles,
+  FileText, SquarePen, Phone, Sparkles,
   Menu, X, ChevronLeft, ChevronRight, ChartBarDecreasing, ShoppingCart
 } from "lucide-react";
 
@@ -16,6 +16,7 @@ const navItems = [
   { label: "Users", href: "/users", icon: <Users size={18} /> },
   { label: "Orders", href: "/orders", icon: <ClockArrowUp size={18} />, badge: 5 },
   { label: "Ask A Message", href: "/askamessage", icon: <MessageSquare size={18} /> },
+  { label: "Contact Queries", href: "/contactqueries", icon: <Phone size={18} /> },
 ];
 
 export default function Sidebar() {

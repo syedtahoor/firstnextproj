@@ -6,7 +6,7 @@ import {
   User, ShieldCheck, ShieldAlert,
   Mail, Phone, MapPin, Calendar,
   Ban, Trash2, ShoppingBag, DollarSign,
-  MoreHorizontal,
+  MoreHorizontal, ChevronRight,
 } from "lucide-react";
 
 type UserStatus = "Active" | "Inactive" | "Banned" | "Pending";
@@ -66,6 +66,7 @@ const SortArrow = ({ active, asc }: { active: boolean; asc: boolean }) =>
     ? asc ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
     : <ArrowUpDown className="h-3 w-3 opacity-30" />;
 
+/* ── Desktop Card ── */
 function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number) => void; onDelete: (id: number) => void }) {
   const RoleIcon = ROLE_ICON[user.role];
   const [menuOpen, setMenuOpen] = useState(false);
@@ -172,6 +173,83 @@ function UserCard({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number
   );
 }
 
+/* ── Mobile Row ── */
+function UserRow({ user, onBan, onDelete }: { user: AppUser; onBan: (id: number) => void; onDelete: (id: number) => void }) {
+  const RoleIcon = ROLE_ICON[user.role];
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <div className="bg-white flex items-center gap-3 px-4 py-3 border-b border-gray-100 last:border-b-0">
+      {/* Avatar */}
+      <div className="w-10 h-10 rounded-xl overflow-hidden border flex-shrink-0" style={{ borderColor: "#0a3d4720" }}>
+        {user.avatar
+          ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+          : (
+            <div className="w-full h-full flex items-center justify-center font-extrabold text-sm" style={{ backgroundColor: "#0a3d4715", color: "#0a3d47" }}>
+              {user.name[0]}
+            </div>
+          )}
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-bold text-gray-900 text-[13px] truncate">{user.name}</span>
+          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full font-semibold border ${ROLE_CLASS[user.role]}`}>
+            <RoleIcon className="h-2.5 w-2.5" />{user.role}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+          <span className="text-[11px] text-gray-400 truncate max-w-[160px]">{user.email}</span>
+        </div>
+        <div className="flex items-center gap-3 mt-1">
+          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full font-semibold border ${STATUS_CLASS[user.status]}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[user.status]}`} />
+            {user.status}
+          </span>
+          <span className="text-[11px] text-gray-400 flex items-center gap-1">
+            <ShoppingBag className="h-3 w-3" />{user.orders}
+          </span>
+          <span className="text-[11px] text-gray-400 flex items-center gap-1">
+            <DollarSign className="h-3 w-3" />${user.spent.toLocaleString()}
+          </span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="relative flex-shrink-0">
+        <button
+          onClick={() => setMenuOpen(o => !o)}
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
+        {menuOpen && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+            <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-xl shadow-xl w-36 py-1 text-xs">
+              <button
+                onClick={() => { onBan(user.id); setMenuOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-gray-700"
+              >
+                <Ban className="h-3.5 w-3.5" />
+                {user.status === "Banned" ? "Unban User" : "Ban User"}
+              </button>
+              <div className="border-t border-gray-100 my-1" />
+              <button
+                onClick={() => { onDelete(user.id); setMenuOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-red-50 text-red-600"
+              >
+                <Trash2 className="h-3.5 w-3.5" /> Delete
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function UsersPage() {
   const [users, setUsers]               = useState<AppUser[]>(INITIAL_USERS);
   const [search, setSearch]             = useState<string>("");
@@ -179,6 +257,7 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState<UserStatus | "All">("All");
   const [sortKey, setSortKey]           = useState<SortKey>("name");
   const [sortAsc, setSortAsc]           = useState<boolean>(true);
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   const visible = users
     .filter(u => {
@@ -226,27 +305,31 @@ export default function UsersPage() {
     { label: "Status", key: "status" },
   ];
 
+  const activeSortLabel = sortOptions.find(o => o.key === sortKey)?.label ?? "Name";
+
   return (
     <div className="min-h-screen font-sans text-sm text-gray-700">
 
-      <div className="bg-white border-b rounded-md border-gray-200 px-6 pt-6 pb-0">
-        <div className="mb-5">
+      {/* ── Header ── */}
+      <div className="bg-white border-b rounded-md border-gray-200 px-4 sm:px-6 pt-4 sm:pt-6 pb-0">
+        <div className="mb-4 sm:mb-5">
           <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#0a3d47" }}>Management</p>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Users</h1>
-          <p className="text-sm text-gray-500 mt-1">View and manage all registered users on your platform</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Users</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">View and manage all registered users on your platform</p>
         </div>
 
-        <div className="flex gap-1">
+        {/* Status tabs — horizontally scrollable on mobile */}
+        <div className="flex gap-0.5 sm:gap-1 overflow-x-auto scrollbar-none -mx-4 sm:mx-0 px-4 sm:px-0">
           {statusTabs.map(s => (
             <button
               key={s.key}
               onClick={() => setStatusFilter(s.key)}
-              className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-t-lg border border-b-0 relative bottom-[-1px] transition-colors
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs font-semibold rounded-t-lg border border-b-0 relative bottom-[-1px] transition-colors whitespace-nowrap flex-shrink-0
                 ${statusFilter === s.key
                   ? "bg-gray-50 border-gray-200 text-gray-900"
                   : "bg-transparent border-transparent text-gray-400 hover:text-gray-600"}`}
             >
-              <span className={`w-2 h-2 rounded-full ${s.dot}`} />
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${s.dot}`} />
               {s.label}
               <span className="font-bold text-gray-700">{s.n}</span>
             </button>
@@ -254,12 +337,14 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 flex-wrap">
-        <div className="relative">
+      {/* ── Toolbar ── */}
+      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 flex-wrap">
+        {/* Search */}
+        <div className="relative flex-1 sm:flex-none">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
           <input
-            className="pl-9 w-64 h-9 text-sm border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0a3d47] bg-white"
-            placeholder="Search by name or email…"
+            className="pl-9 w-full sm:w-64 h-9 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#0a3d47] bg-white"
+            placeholder="Search…"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -270,9 +355,8 @@ export default function UsersPage() {
           )}
         </div>
 
-        <div className="flex-1" />
-
-        <div className="flex items-center gap-2">
+        {/* ── Desktop sort pills ── */}
+        <div className="hidden sm:flex items-center gap-2 ml-auto">
           <span className="text-xs text-gray-400 font-medium">Sort:</span>
           <div className="flex gap-1">
             {sortOptions.map(({ label, key }) => (
@@ -288,17 +372,57 @@ export default function UsersPage() {
             ))}
           </div>
         </div>
+
+        {/* ── Mobile sort dropdown ── */}
+        <div className="relative sm:hidden">
+          <button
+            onClick={() => setShowSortMenu(o => !o)}
+            className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gray-600"
+          >
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            {activeSortLabel}
+            <ChevronDown className="h-3 w-3 text-gray-400" />
+          </button>
+          {showSortMenu && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setShowSortMenu(false)} />
+              <div className="absolute right-0 top-10 z-20 bg-white border border-gray-200 rounded-xl shadow-xl w-40 py-1 text-xs">
+                {sortOptions.map(({ label, key }) => (
+                  <button
+                    key={key}
+                    onClick={() => { toggleSort(key); setShowSortMenu(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 ${sortKey === key ? "font-bold" : "text-gray-700"}`}
+                    style={sortKey === key ? { color: "#0a3d47" } : {}}
+                  >
+                    {label}
+                    {sortKey === key && <SortArrow active={true} asc={sortAsc} />}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="py-4">
+      {/* ── Content ── */}
+      <div className="py-3 sm:py-4 px-0">
         {visible.length > 0 ? (
           <>
             <p className="text-xs text-gray-400 mb-3 font-medium">
               Showing {visible.length} of {users.length} users
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+            {/* Desktop card grid */}
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {visible.map(user => (
                 <UserCard key={user.id} user={user} onBan={banUser} onDelete={deleteUser} />
+              ))}
+            </div>
+
+            {/* Mobile list */}
+            <div className="sm:hidden bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              {visible.map(user => (
+                <UserRow key={user.id} user={user} onBan={banUser} onDelete={deleteUser} />
               ))}
             </div>
           </>

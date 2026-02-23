@@ -38,15 +38,19 @@ function ImageField({ value, onChange, label }: { value: string; onChange: (v: s
     <div className="flex flex-col gap-1">
       <label className={LBL}>{label}</label>
       <div className="flex gap-2">
-        <input value={value} onChange={e => onChange(e.target.value)}
+        <input
+          value={value}
+          onChange={e => onChange(e.target.value)}
           placeholder="Paste image URL..."
-          className="flex-1 px-3 py-2 rounded-sm border border-[#cde4e8] bg-white text-xs text-[#1a3340] outline-none"
+          className="flex-1 min-w-0 px-3 py-2 rounded-sm border border-[#cde4e8] bg-white text-xs text-[#1a3340] outline-none"
         />
         <input ref={ref} type="file" accept="image/*" className="hidden"
           onChange={e => { const f = e.target.files?.[0]; if (f) onChange(URL.createObjectURL(f)); }}
         />
-        <button onClick={() => ref.current?.click()}
-          className="px-3 py-2 rounded-lg border border-[#0ec6d5] bg-[#f0fdff] text-[#0a3d47] font-bold text-sm cursor-pointer whitespace-nowrap hover:bg-[#e0fafc] transition-colors">
+        <button
+          onClick={() => ref.current?.click()}
+          className="flex-shrink-0 px-3 py-2 rounded-lg border border-[#0ec6d5] bg-[#f0fdff] text-[#0a3d47] font-bold text-sm cursor-pointer whitespace-nowrap hover:bg-[#e0fafc] transition-colors"
+        >
           📁
         </button>
       </div>
@@ -54,87 +58,211 @@ function ImageField({ value, onChange, label }: { value: string; onChange: (v: s
   );
 }
 
-// ─── LivePreview ─────────────────────────────────────────────────
+// ─── MobilePreview (stacked layout for mobile) ───────────────────
+function MobilePreview({ slides, leftBanners, rightCards, activeSlide, onSlideChange, highlight }:
+  { slides: Slide[]; leftBanners: LeftBanner[]; rightCards: RightCard[]; activeSlide: number; onSlideChange: (i: number) => void; highlight: string }
+) {
+  return (
+    <div className="flex flex-col gap-1.5 p-2">
+
+      {/* CENTER SLIDER — full width on mobile */}
+      <div
+        className={`relative rounded-xl overflow-hidden bg-[#e8f4f5] transition-all duration-200 ${highlight === "slider" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`}
+        style={{ height: 200 }}
+      >
+        <img
+          src={slides[activeSlide]?.imageUrl}
+          alt="slide"
+          className="w-full h-full object-cover block"
+          onError={e => { (e.target as HTMLImageElement).src = "https://placehold.co/700x200/e8f4f5/0a3d47?text=Slide+Image"; }}
+        />
+        {slides[activeSlide]?.badge && (
+          <div className="absolute top-2 right-2 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-center text-[7px] font-black leading-tight p-1">
+            {slides[activeSlide].badge}
+          </div>
+        )}
+        <button
+          onClick={() => onSlideChange((activeSlide - 1 + slides.length) % slides.length)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors"
+        >‹</button>
+        <button
+          onClick={() => onSlideChange((activeSlide + 1) % slides.length)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors"
+        >›</button>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => onSlideChange(i)}
+              className="h-1.5 rounded-full border-none cursor-pointer transition-all duration-200"
+              style={{ width: i === activeSlide ? 18 : 6, background: i === activeSlide ? "#0ec6d5" : "rgba(255,255,255,0.6)" }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* LEFT BANNERS — horizontal scroll on mobile */}
+      <div
+        className={`transition-all duration-200 ${highlight === "left" ? "outline outline-2 outline-[#0a3d47] rounded-sm" : ""}`}
+      >
+        <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {leftBanners.map((b, i) => (
+            <div
+              key={b.id}
+              className="relative rounded-sm overflow-hidden flex-shrink-0"
+              style={{ width: 140, height: 80, border: `1.5px solid ${b.accentColor}40` }}
+            >
+              <img
+                src={b.imageUrl}
+                alt={b.title}
+                className="w-full h-full object-cover block"
+                onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/140x80/0a3d47/fff?text=Banner+${i + 1}`; }}
+              />
+              <div className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5" style={{ background: b.accentColor }}>
+                <div className="text-[8px] text-white font-extrabold truncate">{b.cta}</div>
+              </div>
+              <div className="absolute top-1 left-1 bg-black/55 rounded px-1 py-0.5">
+                <div className="text-[6px] text-white font-bold tracking-wide">{b.label}</div>
+                <div className="text-[8px] text-white font-black">{b.title}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* RIGHT CARDS — horizontal scroll on mobile */}
+      <div
+        className={`transition-all duration-200 ${highlight === "right" ? "outline outline-2 outline-[#0a3d47] rounded-sm" : ""}`}
+      >
+        <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {rightCards.map((c, i) => (
+            <div
+              key={c.id}
+              className="relative rounded-sm overflow-hidden flex-shrink-0 border border-[#0ec6d530]"
+              style={{ width: 140, height: 80 }}
+            >
+              <img
+                src={c.imageUrl}
+                alt={c.title}
+                className="w-full h-full object-cover block"
+                onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/140x80/0a3d47/fff?text=Card+${i + 1}`; }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/55" />
+              <div className="absolute top-1 left-1.5">
+                <div className="text-[6px] text-[#0ec6d5] font-extrabold tracking-widest">{c.tag}</div>
+                <div className="text-[8px] text-white font-black leading-tight">{c.title}</div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-[#0ec6d5] px-1.5 py-0.5">
+                <div className="text-[8px] text-[#0a3d47] font-extrabold truncate">{c.cta}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── DesktopPreview (original 3-column layout) ───────────────────
+function DesktopPreview({ slides, leftBanners, rightCards, activeSlide, onSlideChange, highlight }:
+  { slides: Slide[]; leftBanners: LeftBanner[]; rightCards: RightCard[]; activeSlide: number; onSlideChange: (i: number) => void; highlight: string }
+) {
+  return (
+    <div className="grid gap-1.5 p-2" style={{ gridTemplateColumns: "180px 1fr 180px" }}>
+
+      {/* LEFT BANNERS */}
+      <div className={`flex flex-col gap-1.5 rounded-sm transition-all duration-200 ${highlight === "left" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`}>
+        {leftBanners.map((b, i) => (
+          <div key={b.id} className="relative rounded-sm overflow-hidden h-[100px]" style={{ border: `1.5px solid ${b.accentColor}40` }}>
+            <img src={b.imageUrl} alt={b.title} className="w-full h-full object-cover block"
+              onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/300x100/0a3d47/fff?text=Banner+${i + 1}`; }} />
+            <div className="absolute bottom-0 left-0 right-0 px-2 py-1" style={{ background: b.accentColor }}>
+              <div className="text-[9px] text-white font-extrabold">{b.cta}</div>
+            </div>
+            <div className="absolute top-1.5 left-1.5 bg-black/55 rounded px-1.5 py-0.5">
+              <div className="text-[7px] text-white font-bold tracking-wide">{b.label}</div>
+              <div className="text-[9px] text-white font-black">{b.title}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* CENTER SLIDER */}
+      <div className={`relative rounded-xl overflow-hidden bg-[#e8f4f5] transition-all duration-200 ${highlight === "slider" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`} style={{ height: 311 }}>
+        <img src={slides[activeSlide]?.imageUrl} alt="slide" className="w-full h-full object-cover block"
+          onError={e => { (e.target as HTMLImageElement).src = "https://placehold.co/700x311/e8f4f5/0a3d47?text=Slide+Image"; }} />
+        {slides[activeSlide]?.badge && (
+          <div className="absolute top-3 right-3 bg-orange-500 text-white rounded-full w-14 h-14 flex items-center justify-center text-center text-[8px] font-black leading-tight p-1">
+            {slides[activeSlide].badge}
+          </div>
+        )}
+        <button onClick={() => onSlideChange((activeSlide - 1 + slides.length) % slides.length)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors">
+          ‹
+        </button>
+        <button onClick={() => onSlideChange((activeSlide + 1) % slides.length)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors">
+          ›
+        </button>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {slides.map((_, i) => (
+            <button key={i} onClick={() => onSlideChange(i)}
+              className="h-1.5 rounded-full border-none cursor-pointer transition-all duration-200"
+              style={{ width: i === activeSlide ? 18 : 6, background: i === activeSlide ? "#0ec6d5" : "rgba(255,255,255,0.6)" }} />
+          ))}
+        </div>
+      </div>
+
+      {/* RIGHT CARDS */}
+      <div className={`flex flex-col gap-1.5 rounded-sm transition-all duration-200 ${highlight === "right" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`}>
+        {rightCards.map((c, i) => (
+          <div key={c.id} className="relative rounded-sm overflow-hidden h-[100px] border border-[#0ec6d530]">
+            <img src={c.imageUrl} alt={c.title} className="w-full h-full object-cover block"
+              onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/300x100/0a3d47/fff?text=Card+${i + 1}`; }} />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/55" />
+            <div className="absolute top-1.5 left-2">
+              <div className="text-[7px] text-[#0ec6d5] font-extrabold tracking-widest">{c.tag}</div>
+              <div className="text-[9px] text-white font-black leading-tight">{c.title}</div>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 bg-[#0ec6d5] px-2 py-1">
+              <div className="text-[9px] text-[#0a3d47] font-extrabold">{c.cta}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── LivePreview (responsive wrapper) ────────────────────────────
 function LivePreview({ slides, leftBanners, rightCards, activeSlide, onSlideChange, highlight }:
   { slides: Slide[]; leftBanners: LeftBanner[]; rightCards: RightCard[]; activeSlide: number; onSlideChange: (i: number) => void; highlight: string }
 ) {
   return (
     <div className="bg-[#f0f8f9] rounded-2xl border-2 border-[#0ec6d530] overflow-hidden mb-7">
-
       {/* Mini Nav */}
       <div className="bg-white border-b border-[#e5eef0] px-4 py-2 flex items-center gap-3">
         <span className="font-black text-sm text-[#0a3d47]">Flex<span className="text-[#0ec6d5]">E</span> Market</span>
         <div className="w-px h-4 bg-gray-200" />
-        <span className="text-[11px] text-gray-500">Products</span>
-        <span className="text-[11px] text-gray-500">Services</span>
+        <span className="text-[11px] text-gray-500 hidden sm:inline">Products</span>
+        <span className="text-[11px] text-gray-500 hidden sm:inline">Services</span>
         <div className="flex-1" />
-        
       </div>
 
+      {/* Mobile preview */}
+      <div className="block md:hidden">
+        <MobilePreview
+          slides={slides} leftBanners={leftBanners} rightCards={rightCards}
+          activeSlide={activeSlide} onSlideChange={onSlideChange} highlight={highlight}
+        />
+      </div>
 
-      {/* 3-column layout — gridTemplateColumns needs inline for custom value */}
-      <div className="grid gap-1.5 p-2" style={{ gridTemplateColumns: "180px 1fr 180px" }}>
-
-        {/* LEFT BANNERS */}
-        <div className={`flex flex-col gap-1.5 rounded-sm transition-all duration-200 ${highlight === "left" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`}>
-          {leftBanners.map((b, i) => (
-            <div key={b.id} className="relative rounded-sm overflow-hidden h-[100px]" style={{ border: `1.5px solid ${b.accentColor}40` }}>
-              <img src={b.imageUrl} alt={b.title} className="w-full h-full object-cover block"
-                onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/300x100/0a3d47/fff?text=Banner+${i + 1}`; }} />
-              <div className="absolute bottom-0 left-0 right-0 px-2 py-1" style={{ background: b.accentColor }}>
-                <div className="text-[9px] text-white font-extrabold">{b.cta}</div>
-              </div>
-              <div className="absolute top-1.5 left-1.5 bg-black/55 rounded px-1.5 py-0.5">
-                <div className="text-[7px] text-white font-bold tracking-wide">{b.label}</div>
-                <div className="text-[9px] text-white font-black">{b.title}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* CENTER SLIDER */}
-        <div className={`relative rounded-xl overflow-hidden bg-[#e8f4f5] transition-all duration-200 ${highlight === "slider" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`} style={{ height: 311 }}>
-          <img src={slides[activeSlide]?.imageUrl} alt="slide" className="w-full h-full object-cover block"
-            onError={e => { (e.target as HTMLImageElement).src = "https://placehold.co/700x311/e8f4f5/0a3d47?text=Slide+Image"; }} />
-          {slides[activeSlide]?.badge && (
-            <div className="absolute top-3 right-3 bg-orange-500 text-white rounded-full w-14 h-14 flex items-center justify-center text-center text-[8px] font-black leading-tight p-1">
-              {slides[activeSlide].badge}
-            </div>
-          )}
-          <button onClick={() => onSlideChange((activeSlide - 1 + slides.length) % slides.length)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors">
-            ‹
-          </button>
-          <button onClick={() => onSlideChange((activeSlide + 1) % slides.length)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 border-none rounded-full w-7 h-7 cursor-pointer text-sm flex items-center justify-center shadow-md hover:bg-white transition-colors">
-            ›
-          </button>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {slides.map((_, i) => (
-              <button key={i} onClick={() => onSlideChange(i)}
-                className="h-1.5 rounded-full border-none cursor-pointer transition-all duration-200"
-                style={{ width: i === activeSlide ? 18 : 6, background: i === activeSlide ? "#0ec6d5" : "rgba(255,255,255,0.6)" }} />
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT CARDS */}
-        <div className={`flex flex-col gap-1.5 rounded-sm transition-all duration-200 ${highlight === "right" ? "outline outline-2 outline-[#0a3d47]" : "outline outline-2 outline-transparent"}`}>
-          {rightCards.map((c, i) => (
-            <div key={c.id} className="relative rounded-sm overflow-hidden h-[100px] border border-[#0ec6d530]">
-              <img src={c.imageUrl} alt={c.title} className="w-full h-full object-cover block"
-                onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/300x100/0a3d47/fff?text=Card+${i + 1}`; }} />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/55" />
-              <div className="absolute top-1.5 left-2">
-                <div className="text-[7px] text-[#0ec6d5] font-extrabold tracking-widest">{c.tag}</div>
-                <div className="text-[9px] text-white font-black leading-tight">{c.title}</div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-[#0ec6d5] px-2 py-1">
-                <div className="text-[9px] text-[#0a3d47] font-extrabold">{c.cta}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Desktop preview */}
+      <div className="hidden md:block">
+        <DesktopPreview
+          slides={slides} leftBanners={leftBanners} rightCards={rightCards}
+          activeSlide={activeSlide} onSlideChange={onSlideChange} highlight={highlight}
+        />
       </div>
     </div>
   );
@@ -202,7 +330,7 @@ function LeftBannersEditor({ banners, setBanners }:
             <div className="w-1.5 h-9 rounded flex-shrink-0" style={{ background: b.accentColor }} />
             <span className="font-bold text-sm text-[#0a3d47]">Banner {i + 1}</span>
           </div>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className={LBL}>Top Label</label>
               <input value={b.label} onChange={e => update(i, "label", e.target.value)} className={INP} />
@@ -220,7 +348,7 @@ function LeftBannersEditor({ banners, setBanners }:
               <input type="color" value={b.accentColor} onChange={e => update(i, "accentColor", e.target.value)}
                 className="w-full h-[38px] rounded-lg border border-[#cde4e8] cursor-pointer p-0.5" />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <ImageField label="Banner Image" value={b.imageUrl} onChange={val => update(i, "imageUrl", val)} />
             </div>
           </div>
@@ -245,7 +373,7 @@ function RightCardsEditor({ cards, setCards }:
             <div className="w-1.5 h-9 rounded bg-[#0ec6d5] flex-shrink-0" />
             <span className="font-bold text-sm text-[#0a3d47]">Card {i + 1}</span>
           </div>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className={LBL}>Tag</label>
               <input value={c.tag} onChange={e => update(i, "tag", e.target.value)} className={INP} />
@@ -254,11 +382,11 @@ function RightCardsEditor({ cards, setCards }:
               <label className={LBL}>Title</label>
               <input value={c.title} onChange={e => update(i, "title", e.target.value)} className={INP} />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <label className={LBL}>CTA Text</label>
               <input value={c.cta} onChange={e => update(i, "cta", e.target.value)} className={INP} />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <ImageField label="Card Image" value={c.imageUrl} onChange={val => update(i, "imageUrl", val)} />
             </div>
           </div>
@@ -277,6 +405,7 @@ export default function HomepageEditor() {
   const [activeTab, setActiveTab]     = useState<TabKey>("slider");
   const [publishing, setPublishing]   = useState(false);
   const [published, setPublished]     = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const tabs: Tab[] = [
     { key: "left",   label: "📌 Left Banners", highlight: "left"   },
@@ -295,36 +424,39 @@ export default function HomepageEditor() {
     <div className="min-h-screen bg-[#f0f8f9] font-sans">
 
       {/* TOP BAR */}
-      <div className="sticky top-0 rounded-lg z-50 bg-[#0a3d47] px-7 h-14 flex items-center justify-between shadow-[0_4px_20px_rgba(10,61,71,0.3)]">
-        <div className="flex items-center gap-3.5">
-          <span className="font-black text-lg text-white tracking-tight">
+      <div className="sticky top-0 rounded-lg z-50 bg-[#0a3d47] px-4 md:px-7 h-14 flex items-center justify-between shadow-[0_4px_20px_rgba(10,61,71,0.3)]">
+        <div className="flex items-center gap-2 md:gap-3.5 min-w-0">
+          <span className="font-black text-base md:text-lg text-white tracking-tight whitespace-nowrap">
             Flex<span className="text-[#0ec6d5]">E</span> Market
           </span>
-          <div className="w-px h-5 bg-white/20" />
-          <span className="text-white/65 text-sm">Home Page Editor</span>
+          <div className="hidden sm:block w-px h-5 bg-white/20" />
+          <span className="hidden sm:inline text-white/65 text-sm truncate">Home Page Editor</span>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2 items-center">
           {published && (
-            <span className="bg-emerald-500/10 border border-emerald-500 text-emerald-400 rounded-full text-xs font-semibold px-3.5 py-1">
+            <span className="hidden sm:inline bg-emerald-500/10 border border-emerald-500 text-emerald-400 rounded-full text-xs font-semibold px-3 py-1">
               ✓ Published!
             </span>
           )}
-          <button className="bg-white/10 border border-white/20 text-white rounded-lg px-4 py-1.5 text-sm font-semibold cursor-pointer hover:bg-white/20 transition-colors">
+          <button className="hidden sm:inline-flex bg-white/10 border border-white/20 text-white rounded-lg px-4 py-1.5 text-sm font-semibold cursor-pointer hover:bg-white/20 transition-colors">
             Preview
           </button>
-          <button onClick={handlePublish}
-            className={`border-none text-[#0a3d47] rounded-lg px-5 py-1.5 text-sm font-extrabold cursor-pointer transition-all shadow-[0_2px_10px_rgba(14,198,213,0.4)] ${publishing ? "bg-[#0ec6d599]" : "bg-[#0ec6d5] hover:bg-[#0bb8c7]"}`}>
+          <button
+            onClick={handlePublish}
+            className={`border-none text-[#0a3d47] rounded-lg px-4 md:px-5 py-1.5 text-sm font-extrabold cursor-pointer transition-all shadow-[0_2px_10px_rgba(14,198,213,0.4)] ${publishing ? "bg-[#0ec6d599]" : "bg-[#0ec6d5] hover:bg-[#0bb8c7]"}`}
+          >
             {publishing ? "Publishing..." : "Publish"}
           </button>
         </div>
       </div>
 
-      <div className=" mx-auto  pt-7 pb-16">
+      {/* MAIN CONTENT */}
+      <div className="px-0 md:px-7 lg:px-10 xl:px-0 mx-auto max-w-screen-xl pt-6 pb-16">
 
         {/* Title */}
         <div className="mb-5">
-          <h1 className="font-extrabold text-2xl text-[#0a3d47] m-0">Home Page Editor</h1>
-          <p className="text-gray-500 mt-1 text-sm">Changes reflect live in the preview below. Click a tab to edit that section.</p>
+          <h1 className="font-extrabold text-xl md:text-2xl text-[#0a3d47] m-0">Home Page Editor</h1>
+          <p className="text-gray-500 mt-1 text-xs md:text-sm">Changes reflect live in the preview below. Click a tab to edit that section.</p>
         </div>
 
         {/* LIVE PREVIEW */}
@@ -342,18 +474,23 @@ export default function HomepageEditor() {
           />
         </div>
 
-        {/* TABS */}
-        <div className="flex gap-1 bg-[#e0edf0] rounded-xl p-1 w-fit mb-5">
-          {tabs.map(t => (
-            <button key={t.key} onClick={() => setActiveTab(t.key)}
-              className={`px-5 py-2 rounded-[9px] border-none font-semibold text-sm cursor-pointer transition-all font-[inherit] ${activeTab === t.key ? "bg-[#0a3d47] text-white" : "bg-transparent text-[#4b7a83] hover:text-[#0a3d47]"}`}>
-              {t.label}
-            </button>
-          ))}
+        {/* TABS — scrollable on mobile */}
+        <div className="mb-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-1 bg-[#e0edf0] rounded-xl p-1 w-fit min-w-full sm:min-w-0">
+            {tabs.map(t => (
+              <button
+                key={t.key}
+                onClick={() => setActiveTab(t.key)}
+                className={`flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-[9px] border-none font-semibold text-xs sm:text-sm cursor-pointer transition-all font-[inherit] whitespace-nowrap ${activeTab === t.key ? "bg-[#0a3d47] text-white" : "bg-transparent text-[#4b7a83] hover:text-[#0a3d47]"}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* EDITOR PANEL */}
-        <div className="bg-white rounded-2xl border border-[#e0edf0] shadow-sm p-6">
+        <div className="bg-white rounded-2xl border border-[#e0edf0] shadow-sm p-4 md:p-6">
           <div className="flex items-center gap-2.5 mb-5">
             <div className="w-1 h-5 bg-[#0ec6d5] rounded" />
             <span className="font-bold text-[15px] text-[#0a3d47]">
@@ -365,6 +502,13 @@ export default function HomepageEditor() {
           {activeTab === "left"   && <LeftBannersEditor banners={leftBanners} setBanners={setLeftBanners} />}
           {activeTab === "right"  && <RightCardsEditor cards={rightCards} setCards={setRightCards} />}
         </div>
+
+        {/* Mobile published toast */}
+        {published && (
+          <div className="sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-emerald-500 text-white rounded-full text-sm font-semibold px-5 py-2 shadow-lg z-50">
+            ✓ Published!
+          </div>
+        )}
       </div>
     </div>
   );

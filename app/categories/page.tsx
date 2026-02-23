@@ -68,11 +68,12 @@ export default function CategoriesPage() {
     setShowForm(false);
   };
 
-  const del       = (id: number) => setCats(prev => prev.filter(c => c.id !== id));
+  const del        = (id: number) => setCats(prev => prev.filter(c => c.id !== id));
   const bulkDelete = () => { setCats(prev => prev.filter(c => !selected.has(c.id))); setSelected(new Set()); };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-sm text-gray-700">
+    /* Safe area padding for mobile notch / home bar */
+    <div className="min-h-screen bg-gray-50 text-sm text-gray-700 pb-safe">
       <CategoriesHeader
         search={search} onSearch={setSearch}
         typeFilter={typeFilter} onTypeFilter={setTypeFilter}

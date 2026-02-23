@@ -111,42 +111,46 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-sm text-gray-700">
-      <div className="bg-white border-b border-gray-200 px-6 pt-6 pb-0">
-        <div className="flex items-start justify-between gap-4 mb-5">
+
+      {/* ── Header ── */}
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 pt-4 md:pt-6 pb-0">
+        <div className="flex items-start justify-between gap-4 mb-4 md:mb-5">
           <div>
             <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#0a3d47" }}>Store</p>
-            <h1 className="text-2xl font-extrabold text-gray-900">Orders</h1>
-            <p className="text-sm text-gray-500 mt-1">Track and manage all customer orders</p>
+            <h1 className="text-xl md:text-2xl font-extrabold text-gray-900">Orders</h1>
+            <p className="text-xs md:text-sm text-gray-500 mt-0.5 md:mt-1">Track and manage all customer orders</p>
           </div>
-          <div className="text-right mt-1">
-            <p className="text-xs text-gray-400 font-medium">Total Revenue</p>
-            <p className="text-xl font-extrabold" style={{ color: "#0a3d47" }}>${revenue.toLocaleString()}</p>
+          <div className="text-right mt-1 flex-shrink-0">
+            <p className="text-[10px] md:text-xs text-gray-400 font-medium">Total Revenue</p>
+            <p className="text-lg md:text-xl font-extrabold" style={{ color: "#0a3d47" }}>${revenue.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="flex gap-0.5 overflow-x-auto">
+        {/* Tabs — scrollable on mobile */}
+        <div className="flex gap-0.5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           {tabs.map(t => (
             <button
               key={t.key}
               onClick={() => setStatusFilter(t.key)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-t-lg border border-b-0 relative bottom-[-1px] transition-colors
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 md:px-4 py-2 text-xs font-semibold rounded-t-lg border border-b-0 relative bottom-[-1px] transition-colors whitespace-nowrap
                 ${statusFilter === t.key
                   ? "bg-gray-50 border-gray-200 text-gray-900"
                   : "bg-transparent border-transparent text-gray-400 hover:text-gray-600"}`}
             >
-              {t.dot && <span className={`w-2 h-2 rounded-full ${t.dot}`} />}
+              {t.dot && <span className={`w-2 h-2 rounded-full flex-shrink-0 ${t.dot}`} />}
               {t.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="pb-3 flex items-center gap-3 mt-5">
-        <div className="relative flex-1 max-w-sm">
+      {/* ── Toolbar ── */}
+      <div className="px-0 pb-3 flex items-center gap-3 mt-4 md:mt-5">
+        <div className="relative flex-1 md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
           <input
             className="w-full pl-9 h-10 text-sm border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#0a3d47]/20 focus:border-[#0a3d47] transition-all"
-            placeholder="Search by order ID or customer name…"
+            placeholder="Search by order ID or name…"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -159,12 +163,13 @@ export default function OrdersPage() {
             </button>
           )}
         </div>
-        <p className="text-xs text-gray-400 ml-auto whitespace-nowrap">
-          {visible.length} of {ORDERS.length} orders
+        <p className="text-xs text-gray-400 flex-shrink-0 whitespace-nowrap">
+          {visible.length}/{ORDERS.length}
         </p>
       </div>
 
-      <div className="pb-10 space-y-2.5">
+      {/* ── Order List ── */}
+      <div className="px-0 pb-10 space-y-2.5">
         {visible.length > 0 ? (
           visible.map(order => {
             const cfg       = STATUS_CFG[order.status];
@@ -174,36 +179,49 @@ export default function OrdersPage() {
             return (
               <div
                 key={order.id}
-                className="bg-white border border-gray-200 rounded-md hover:border-gray-300 hover:shadow-md transition-all duration-150 cursor-pointer group"
+                className="bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-150 cursor-pointer group"
                 onClick={() => setSelected(order)}
               >
-                <div className="px-5 py-4 flex items-center gap-4 cursor-pointer">
+                <div className="px-4 md:px-5 py-3.5 md:py-4 flex items-center gap-3 md:gap-4">
+
+                  {/* Avatar */}
                   <img
                     src={order.avatar}
                     alt={order.customer}
-                    className="w-11 h-11 rounded-xl border border-gray-100 flex-shrink-0 object-cover"
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-xl border border-gray-100 flex-shrink-0 object-cover"
                   />
 
+                  {/* Main info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-bold text-gray-900 text-sm">{order.customer}</p>
-                      <code className="text-[11px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono">
+                      <p className="font-bold text-gray-900 text-sm truncate">{order.customer}</p>
+                      <code className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono flex-shrink-0">
                         {order.id}
                       </code>
                     </div>
-                    <div className="flex items-center gap-3 mt-1 flex-wrap">
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />{order.date}
+                    <div className="flex items-center gap-2 md:gap-3 mt-1 flex-wrap">
+                      <span className="text-[11px] text-gray-400 flex items-center gap-1">
+                        <Calendar className="h-3 w-3 flex-shrink-0" />{order.date}
                       </span>
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />{order.city}
+                      <span className="hidden sm:flex text-[11px] text-gray-400 items-center gap-1">
+                        <MapPin className="h-3 w-3 flex-shrink-0" />{order.city}
                       </span>
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        <Package className="h-3 w-3" />{itemCount} item{itemCount > 1 ? "s" : ""}
+                      <span className="text-[11px] text-gray-400 flex items-center gap-1">
+                        <Package className="h-3 w-3 flex-shrink-0" />{itemCount} item{itemCount > 1 ? "s" : ""}
                       </span>
+                    </div>
+
+                    {/* Status badge — visible only on mobile, inline below meta */}
+                    <div className="flex items-center justify-between mt-2 sm:hidden">
+                      <span className={`inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full font-semibold border ${cfg.pill}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${cfg.dot}`} />
+                        {order.status}
+                      </span>
+                      <p className="text-sm font-extrabold text-gray-900">${order.total.toLocaleString()}</p>
                     </div>
                   </div>
 
+                  {/* Product thumbnails — hidden on small mobile */}
                   <div className="hidden sm:flex items-center -space-x-2 flex-shrink-0">
                     {order.items.slice(0, 3).map((item, i) => (
                       <div key={i} className="w-9 h-9 rounded-lg overflow-hidden border-2 border-white shadow-sm">
@@ -217,19 +235,22 @@ export default function OrdersPage() {
                     )}
                   </div>
 
-                  <div className="flex-shrink-0 text-right min-w-[56px]">
+                  {/* Price + pay method — hidden on mobile (shown inline above) */}
+                  <div className="hidden sm:block flex-shrink-0 text-right min-w-[56px]">
                     <p className="text-base font-extrabold text-gray-900">${order.total.toLocaleString()}</p>
                     <p className="text-[11px] text-gray-400">{order.payMethod}</p>
                   </div>
 
-                  <div className="flex-shrink-0">
+                  {/* Status badge — desktop only */}
+                  <div className="hidden sm:block flex-shrink-0">
                     <span className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-semibold border ${cfg.pill}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                       {order.status}
                     </span>
                   </div>
 
-                  <div className="flex-shrink-0 cursor-pointer w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 group-hover:border-gray-300 group-hover:text-gray-600 transition-all">
+                  {/* Chevron */}
+                  <div className="flex-shrink-0 w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 group-hover:border-gray-300 group-hover:text-gray-600 transition-all">
                     <ChevronRight className="h-3.5 w-3.5" />
                   </div>
                 </div>
