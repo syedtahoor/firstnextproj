@@ -5,10 +5,10 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
     optimisticClientCache: true,
     cacheComponents: true,
-    // staleTimes: {
-    //   dynamic: 300,
-    //   static: 300,
-    // },
+    staleTimes: {
+      dynamic: 600,
+      static: 600,
+    },
   },
 };
 

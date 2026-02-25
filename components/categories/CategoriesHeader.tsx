@@ -82,8 +82,7 @@ export default function CategoriesHeader({
           style={{ backgroundColor: BRAND }}
         >
           <Plus size={13} />
-          <span className="hidden xs:inline sm:inline">Add Category</span>
-          <span className="xs:hidden sm:hidden">Add</span>
+          <span>Add Category</span>
         </Button>
       </div>
 
